@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     "verify_email.apps.VerifyEmailConfig",
 ]
 
+
+AUTH_USER_MODEL = 'store.User'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -119,8 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
+MEDIA_URL = '/images/'
 STATICFILES_DIRS = (os.path.join('static'),)
 
 # Default primary key field type
@@ -139,15 +142,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-
+# Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'mohmmedmohssen24@gmail.com'
+EMAIL_HOST_USER = 'mohmmedmohssen24@gmail.com'
+EMAIL_HOST_PASSWORD = 'ajydmadtbhkjhkag'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_ID') 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PW')
-DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
-
-
+PASSWORD_RESET_TIMEOUT = 14400
 
 

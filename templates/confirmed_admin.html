@@ -27,7 +27,7 @@
                 <td>
                     {% if forloop.counter0 != 0  %} <hr style="height: 2px;background-color: black;"> {% endif %}
                     <div class="order-and-buttons">
-                        <h3>Order {{ forloop.counter }} </h3>
+                        <a href="/show_user_details/{{ conf_order.id }}"><h3>Order {{ forloop.counter }} </h3></a>
                         <h5> Status: <span>{{ conf_order.status }}</span></h5>
                         <div class="btns">
                             <a href="/edit_confirmed_order/{{ conf_order.id }}/pending"><input class="btn2" type="button" value="pending" style="background-color: #888;" stat="{{ conf_order.status|is_eq:'pending' }}"></a>

@@ -1,11 +1,20 @@
 from django.template.defaulttags import register
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import auth
 from django.contrib import messages
 from django import forms, template
-from .models import product, testimonial, order, confirmed_orders
+from .models import product, testimonial, order, confirmed_orders, User
 from .forms import product_form 
-from verify_email.email_handler import send_verification_email
+
+# Email Imports
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import EmailMessage
+from .tokens import account_activation_token
+
+
 
 # Create your views here.
 def index(request):
@@ -50,6 +59,32 @@ def product_details(request, id):
     
     return render(request, 'product_details.html', data)
 
+def activate_email(request, user, to_email):
+    mail_subject = 'Activate Your User account.'
+    message = render_to_string('email_template.html', {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
+        'token' : account_activation_token.make_token(user),
+        'protocol' : 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        redirect('/message/please go to your email inbox and click on received activation link to confirm and complete the registeration./home')
+    else:
+        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('/message/ Thank you for your confirmation, You can login Now ...! /login')
+        # messages.success(request, 'Thank you for your confirmation. You can login your account now...!')
 def signup(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -63,10 +98,11 @@ def signup(request):
                 messages.info(request, 'This is used email')
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
-                send_verification_email(request, user)
+                user.is_active = False
                 user.save()
+                activate_email(request, user, email)
                 # messages.info(request, 'thanks for register, plz login')
-                return redirect('/account/login')
+                return redirect('/')
         else:
             messages.info(request, 'the password is not the same')
         return redirect('/account/signup')
@@ -193,6 +229,10 @@ def edit_confirmed_order(request, id, stat):
         order.save()
         return redirect('confirmed_admin')
     else: return redirect('/message/FORBIDDEN FIELD ┌(ಠ_ಠ)┘ /home')
+
+def show_user_details(request, id):
+
+    return render(request, 'show_user_details.html', {'order':confirmed_orders.objects.get(id=id)})
 
 def products_admin(request):
     if request.user.is_superuser:

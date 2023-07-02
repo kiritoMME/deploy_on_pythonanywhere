@@ -1,7 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    address = models.CharField(max_length=600, blank=True)
+    def __str__(self):
+        return self.username
+
 class product(models.Model):
     name = models.CharField(max_length=500)
     description = models.CharField(max_length=1000000)
@@ -18,11 +25,17 @@ class product(models.Model):
     gallery_4 = models.ImageField(upload_to='static/images/',default='static/images/product-null.jpg' ,blank=True, null=True)
     offer_image = models.ImageField(upload_to='static/images/',blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.name}'
+
 class testimonial(models.Model):
     name = models.CharField(max_length=500)
     comment = models.CharField(default="this is from django default comment elit. Quis, repellat. Id natus aut, quasi unde voluptatum, ipsa fugit esse enim numquam officiis cupiditate repellendus nihil fuga. A iure fugit hic. lo",max_length=1000000)
     rate_text = models.CharField(max_length=5,default='FFFFF')
     image = models.ImageField(upload_to='static/images/',blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.name} Testimonial.'
 
 class order(models.Model):
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
@@ -31,6 +44,9 @@ class order(models.Model):
     count = models.IntegerField()
     is_confirmed = models.BooleanField(default=False)
     # confirmed_order = models.ForeignKey(confirmed_orders)
+    
+    def __str__(self):
+        return f'{self.user.username} -->  {self.product} ({self.size})'
 
 class confirmed_orders(models.Model):
     user = models.ForeignKey(User,default=None, on_delete=models.CASCADE)
@@ -40,3 +56,6 @@ class confirmed_orders(models.Model):
     orders = models.ManyToManyField(order)
     orders2 = models.ManyToManyRel(orders, order)
     status = models.CharField(default='pending', max_length=20)
+
+    def __str__(self):
+        return f'{self.user.username} ===== {self.status} '

@@ -1,0 +1,47 @@
+{% extends 'products.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .info-input-container {
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    textarea{
+        min-width: 250px;
+        height: 30px;
+        float: right;
+        width: fit-content;
+    }
+    input[type='button']{
+        float: right;
+    }
+</style>
+<div class="small-container cart-page">
+    <table>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </table>
+    <div class="row">
+        <div class="col-2">
+            <div class="info-input-container">
+                <label for="">Address</label>
+                <textarea type="text" name="address" placeholder="Your Address..." disabled>{{ order.address }}</textarea>
+            </div>
+            <div class="info-input-container">
+                <label for="">Phone Number</label>
+                <textarea  type="text" name="phone" placeholder="Your phone number..." disabled>{{ order.phone }}</textarea>
+            </div>
+        </div>
+        <div class="col-2">
+            <input type="button" class="btn" value="Back" onclick="window.history.back()">
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

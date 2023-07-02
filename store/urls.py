@@ -25,6 +25,8 @@ urlpatterns = [
     path('confirmed', views.confirmed, name='confirmed'),
     path('confirmed_admin', views.confirmed_admin, name='confirmed_admin'),
     path('edit_confirmed_order/<str:id>/<str:stat>', views.edit_confirmed_order, name='edit_confirmed_order'),
+    path('show_user_details/<str:id>', views.show_user_details, name='show_user_details'),
     path('control_panel', views.control_panel, name='control_panel'),
     path('message/<str:message>/<str:directlink>', views.message_template, name='message_template'),
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
 ]

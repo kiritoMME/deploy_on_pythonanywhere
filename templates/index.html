@@ -20,7 +20,7 @@
         <div class="container">
             <div class="navbar">
                 <div class="logo">
-                    <a href="index.html"><img src="{% static 'images/logo.png' %}" width="125px"></a>
+                    <a href="/"><img src="{% static 'images/logo.png' %}" width="125px"></a>
                 </div>
                 <nav>
                     <ul id="MenuItems">
@@ -65,6 +65,17 @@
         </div>
     </div>
     {% endblock header %}
+	<div class="messages" id="msgs">
+        {% for msg in messages %}
+        <div class="layout" id="layout"></div>
+		<div class="message" id="msg{{ forloop.counter }}" style="position: fixed;">
+			<div class="text">
+				{{ msg }}
+			</div>
+			<button onclick="document.getElementById('msgs').style.display = 'none';document.getElementById('layout').style.display = 'none'">X</button>
+		</div>
+		{% endfor %}
+	</div>
     {% block content %}
     <!-------------featured categories ------------->
     <div class="catigories">
